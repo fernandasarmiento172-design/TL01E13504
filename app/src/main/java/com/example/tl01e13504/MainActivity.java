@@ -35,6 +35,9 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 
+import com.example.tl01e13504.Configuraciones.DbContactos;
+
+
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 
@@ -61,7 +64,7 @@ public class MainActivity extends AppCompatActivity {
     private File fotoFile;
 
     ActivityResultLauncher<Intent> tomarFotoLauncher;
-
+    private String codigoPaisSeleccionado = "";
 
 
     @SuppressLint("MissingInflatedId")
@@ -83,7 +86,22 @@ public class MainActivity extends AppCompatActivity {
         btncontactossalvados = (Button) findViewById(R.id.btncontactossalvados);
 
 
+        listaPaises.setOnItemClickListener((parent, view, position, id) -> {
+            String paisSeleccionado = (String) parent.getItemAtPosition(position);
 
+            // --- CÓDIGO A AGREGAR ---
+            // Extraer el código de país (ej. (504)) del string "Honduras (504)"
+            int inicio = paisSeleccionado.indexOf("(");
+            int fin = paisSeleccionado.indexOf(")");
+            if (inicio != -1 && fin != -1) {
+                codigoPaisSeleccionado = paisSeleccionado.substring(inicio + 1, fin);
+            } else {
+                codigoPaisSeleccionado = "";
+            }
+            // -------------------------
+
+            Toast.makeText(MainActivity.this, "Seleccionado: " + paisSeleccionado, Toast.LENGTH_SHORT).show();
+        });
         btnsalvarcontacto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -210,6 +228,7 @@ public class MainActivity extends AppCompatActivity {
         } catch (Exception ex) {
             ex.printStackTrace();
             Toast.makeText(this, "Error al abrir cámara: " + ex.getMessage(), Toast.LENGTH_LONG).show();
+
         }
 
 
@@ -287,11 +306,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void guardarContacto() {
-    }
-
-
-    private void mostrarAlerta(String mensaje) {
+    private void mostrarAlerta (String mensaje){
         AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
         builder.setTitle("Campos Obligatorios");
         builder.setMessage(mensaje); // Usa el mensaje específico
@@ -304,11 +319,46 @@ public class MainActivity extends AppCompatActivity {
         builder.show();
     }
 
+    private void guardarContacto() {
+        String nombreStr = nombre.getText().toString();
+        String telefonoStr = telefono.getText().toString();
+        String notaStr = nota.getText().toString();
 
+        // 2. Verificar que el código de país se seleccionó
+        if (codigoPaisSeleccionado.isEmpty()) {
+            mostrarAlerta("Por favor, selecciona un código de país.");
+            return;
+        }
+
+        // 3. Insertar en la Base de Datos
+        DbContactos dbContactos = new DbContactos(MainActivity.this);
+        long id = dbContactos.insertarContacto(
+                nombreStr,
+                telefonoStr,
+                notaStr,
+                codigoPaisSeleccionado,
+                fotoBase64 // Puede ser null si no se tomó foto
+        );
+
+        if (id > 0) {
+            Toast.makeText(MainActivity.this, "Contacto Guardado (ID: " + id + ")", Toast.LENGTH_LONG).show();
+
+            // 4. Navegar a ActivitySegunda
+            Intent intent = new Intent(MainActivity.this, ActivitySegunda.class);
+            startActivity(intent);
+
+            // Opcional: Limpiar campos
+            nombre.setText("");
+            telefono.setText("");
+            nota.setText("");
+            imageView.setImageDrawable(null); // O establece una imagen por defecto
+            fotoBase64 = null;
+
+        } else {
+            Toast.makeText(MainActivity.this, "Error al guardar el contacto", Toast.LENGTH_LONG).show();
+}
+
+
+        }
     }
-
-
-
-
-
 
