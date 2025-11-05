@@ -23,7 +23,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.Spinner;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -35,12 +34,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+
 
 
 public class MainActivity extends AppCompatActivity {
@@ -66,6 +63,7 @@ public class MainActivity extends AppCompatActivity {
     ActivityResultLauncher<Intent> tomarFotoLauncher;
 
 
+
     @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,10 +83,21 @@ public class MainActivity extends AppCompatActivity {
         btncontactossalvados = (Button) findViewById(R.id.btncontactossalvados);
 
 
+
+        btnsalvarcontacto.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                validarCampos();
+            }
+        });
+
+
         btnfoto.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {Permisos();}
-        }) ;
+            public void onClick(View view) {
+                Permisos();
+            }
+        });
         tomarFotoLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> {
@@ -130,10 +139,19 @@ public class MainActivity extends AppCompatActivity {
                 }
         );
 
+        btncontactossalvados.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // Lanza la actividad para ver la lista
+                Intent intent = new Intent(MainActivity.this, ActivitySegunda.class);
+                startActivity(intent);
+            }
+        });
+
 
     }
-    private String bitmapToBase64(Bitmap bitmap)
-    {
+
+    private String bitmapToBase64(Bitmap bitmap) {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream);
         byte[] byteArray = outputStream.toByteArray();
@@ -142,23 +160,24 @@ public class MainActivity extends AppCompatActivity {
 
     private int exifToDegrees(int exifOrientation) {
         switch (exifOrientation) {
-            case ExifInterface.ORIENTATION_ROTATE_90: return 90;
-            case ExifInterface.ORIENTATION_ROTATE_180: return 180;
-            case ExifInterface.ORIENTATION_ROTATE_270: return 270;
-            default: return 0;
+            case ExifInterface.ORIENTATION_ROTATE_90:
+                return 90;
+            case ExifInterface.ORIENTATION_ROTATE_180:
+                return 180;
+            case ExifInterface.ORIENTATION_ROTATE_270:
+                return 270;
+            default:
+                return 0;
         }
     }
 
 
     private void Permisos() {
-        if(ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) !=
-                PackageManager.PERMISSION_GRANTED)
-        {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) !=
+                PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this,
-                    new String[]{ Manifest.permission.CAMERA}, PERMISO_CAMARA);
-        }
-        else
-        {
+                    new String[]{Manifest.permission.CAMERA}, PERMISO_CAMARA);
+        } else {
             OpenCamara();
         }
     }
@@ -166,27 +185,24 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults, int deviceId) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults, deviceId);
-        if(requestCode == PERMISO_CAMARA)
-        {
-            if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)
-            {
+        if (requestCode == PERMISO_CAMARA) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 OpenCamara();
-            }
-            else
-            {
-                Toast.makeText(this, "Permiso de Camara denegado "  , Toast.LENGTH_LONG).show();
+            } else {
+                Toast.makeText(this, "Permiso de Camara denegado ", Toast.LENGTH_LONG).show();
             }
         }
     }
 
-    private void OpenCamara(){
+    private void OpenCamara() {
         try {
             // Crear archivo temporal
             fotoFile = new File(getExternalFilesDir(Environment.DIRECTORY_PICTURES),
                     "foto_" + System.currentTimeMillis() + ".jpg");
             Uri fotoUri = FileProvider.getUriForFile(this,
-                    "com.example.ucenm3p.provider", fotoFile);
-
+                    getPackageName() + ".provider",
+                    fotoFile
+            );
             Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
             intent.putExtra(MediaStore.EXTRA_OUTPUT, fotoUri);
             tomarFotoLauncher.launch(intent);
@@ -195,8 +211,6 @@ public class MainActivity extends AppCompatActivity {
             ex.printStackTrace();
             Toast.makeText(this, "Error al abrir cámara: " + ex.getMessage(), Toast.LENGTH_LONG).show();
         }
-
-
 
 
         // Configuramos el adaptador del ListView
@@ -244,12 +258,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        btnsalvarcontacto.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                validarCampos();
-            }
-        });
 
     }
 
@@ -279,6 +287,9 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    private void guardarContacto() {
+    }
+
 
     private void mostrarAlerta(String mensaje) {
         AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
@@ -293,14 +304,11 @@ public class MainActivity extends AppCompatActivity {
         builder.show();
     }
 
-    private void guardarContacto() {
-        // Aquí va el código para guardar el contacto
-        // Por ejemplo:
-        String nombreStr = nombre.getText().toString().trim();
-        String telefonoStr = telefono.getText().toString().trim();
-        String notaStr = nota.getText().toString().trim();
 
-        // Muestra un mensaje de éxito
-        Toast.makeText(this, "Contacto guardado con éxito", Toast.LENGTH_SHORT).show();
     }
-}
+
+
+
+
+
+
