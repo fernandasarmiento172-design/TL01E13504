@@ -5,7 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import com.example.tl01e13504.Contactos;
+import com.example.tl01e13504.Configuraciones.Contactos;
 import java.util.ArrayList;
 
 public class SQLLiteConexion extends SQLiteOpenHelper {
@@ -62,6 +62,5 @@ public class SQLLiteConexion extends SQLiteOpenHelper {
         return lista;
     }
 }
-
 
 

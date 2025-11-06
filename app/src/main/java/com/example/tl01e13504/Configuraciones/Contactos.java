@@ -1,4 +1,4 @@
-package com.example.tl01e13504;
+package com.example.tl01e13504.Configuraciones;
 
 public class Contactos {
     private int id;
@@ -41,7 +41,6 @@ public class Contactos {
     // 👇 Esto define cómo se verá en el ListView
     @Override
     public String toString() {
-        return nombre + " (" + codigoPais + ") - " + telefono;
+        return nombre + " (" + codigoPais + ") - " + telefono + " | Nota: " + nota;
     }
 }
-
