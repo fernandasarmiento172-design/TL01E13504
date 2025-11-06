@@ -1,7 +1,7 @@
 package com.example.tl01e13504;
 
 import android.os.Bundle;
-import android.view.View; // 👈 Importar la clase View
+import android.view.View; //
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
@@ -19,7 +19,7 @@ public class ActivitySegunda extends AppCompatActivity {
     SQLLiteConexion dbHelper;
 
     // Declaración del botón
-    Button btnRegresar; // 👈 Ya estaba declarada, ¡perfecto!
+    Button btnRegresar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,7 +28,7 @@ public class ActivitySegunda extends AppCompatActivity {
 
         // 1. Inicialización de Vistas
         listViewContactos = findViewById(R.id.listViewContactos);
-        btnRegresar = findViewById(R.id.btnatras); // 👈 Inicializar el botón
+        btnRegresar = findViewById(R.id.btnatras);
 
         dbHelper = new SQLLiteConexion(this, Transacciones.DBNAME, null, Transacciones.DBVERSION);
 
