@@ -13,71 +13,13 @@
         android:layout_height="45dp"
         android:layout_marginStart="15dp"
         android:layout_marginTop="15dp"
-        android:layout_marginEnd="15dp"
         android:text="Atras"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.049"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.023" />
-
-    <ListView
-        android:id="@+id/listViewContactos"
-        android:layout_width="383dp"
-        android:layout_height="331dp"
-        android:layout_marginStart="15dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="15dp"
-        android:visibility="visible"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editTextText"
-        app:layout_constraintVertical_bias="0.008" />
-
-    <Button
-        android:id="@+id/btneliminarcontacto"
-        android:layout_width="172dp"
-        android:layout_height="46dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginBottom="44dp"
-        android:text="Eliminar Contacto"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btncompartircontacto"
-        app:layout_constraintVertical_bias="0.0" />
-
-    <Button
-        android:id="@+id/btnactualizarcontacto"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:text="Actualizar Contacto"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnverimagen"
-        app:layout_constraintVertical_bias="0.017" />
-
-    <Button
-        android:id="@+id/btnverimagen"
-        android:layout_width="172dp"
-        android:layout_height="44dp"
-        android:layout_marginTop="16dp"
-        android:text="Ver Imagen"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.984"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/listViewContactos" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
         android:id="@+id/editTextText"
-        android:layout_width="370dp"
+        android:layout_width="0dp"
         android:layout_height="57dp"
         android:layout_marginStart="15dp"
         android:layout_marginTop="12dp"
@@ -86,24 +28,65 @@
         android:ems="10"
         android:hint="Buscar"
         android:inputType="text"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.636"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.108" />
+        app:layout_constraintTop_toBottomOf="@+id/btnatras" />
+
+    <ListView
+        android:id="@+id/listViewContactos"
+        android:layout_width="0dp"
+        android:layout_height="0dp"  android:layout_marginStart="15dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="15dp"
+        android:visibility="visible"
+        app:layout_constraintBottom_toTopOf="@+id/btncompartircontacto" app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/editTextText" />
 
     <Button
         android:id="@+id/btncompartircontacto"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_marginStart="15dp"
+        android:layout_marginEnd="8dp"
         android:text="Compartir Contacto"
+        app:layout_constraintBottom_toTopOf="@+id/btneliminarcontacto"
+        app:layout_constraintEnd_toStartOf="@+id/btnverimagen"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        android:id="@+id/btnverimagen"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="15dp"
+        android:text="Ver Imagen"
+        app:layout_constraintBottom_toTopOf="@+id/btnactualizarcontacto"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/btncompartircontacto" />
+
+    <Button
+        android:id="@+id/btneliminarcontacto"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="15dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="16dp"
+        android:text="Eliminar Contacto"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/btnactualizarcontacto"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        android:id="@+id/btnactualizarcontacto"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="15dp"
+        android:layout_marginBottom="16dp"
+        android:text="Actualizar Contacto"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.033"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/listViewContactos"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintStart_toEndOf="@+id/btneliminarcontacto" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

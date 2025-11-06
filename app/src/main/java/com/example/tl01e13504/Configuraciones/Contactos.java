@@ -1,6 +1,12 @@
 package com.example.tl01e13504.Configuraciones;
 
-public class Contactos {
+import java.io.Serializable; // Importación necesaria
+
+public class Contactos implements Serializable { // 👈 IMPLEMENTAR Serializable
+
+    // Es buena práctica incluir este ID
+    private static final long serialVersionUID = 1L;
+
     private int id;
     private String nombre;
     private String telefono;
@@ -8,8 +14,10 @@ public class Contactos {
     private String codigoPais;
     private String imagen;
 
+    // Constructor vacío
     public Contactos() {}
 
+    // Constructor completo
     public Contactos(int id, String nombre, String telefono, String nota, String codigoPais, String imagen) {
         this.id = id;
         this.nombre = nombre;
@@ -20,6 +28,7 @@ public class Contactos {
     }
 
     // Getters y setters
+
     public int getId() { return id; }
     public void setId(int id) { this.id = id; }
 
@@ -38,7 +47,7 @@ public class Contactos {
     public String getImagen() { return imagen; }
     public void setImagen(String imagen) { this.imagen = imagen; }
 
-    // 👇 Esto define cómo se verá en el ListView
+    // Representación en cadena (útil para debug o listados simples)
     @Override
     public String toString() {
         return nombre + " (" + codigoPais + ") - " + telefono + " | Nota: " + nota;
