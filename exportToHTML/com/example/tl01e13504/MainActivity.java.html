@@ -1,0 +1,349 @@
+<html>
+<head>
+<title>MainActivity.java</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #cf8e6d;}
+.s1 { color: #bcbec4;}
+.s2 { color: #bcbec4;}
+.s3 { color: #7a7e85;}
+.s4 { color: #6aab73;}
+.s5 { color: #2aacb8;}
+.s6 { color: #5f826b; font-style: italic;}
+</style>
+</head>
+<body bgcolor="#1e1f22">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+MainActivity.java</font>
+</center></td></tr></table>
+<pre><span class="s0">package </span><span class="s1">com</span><span class="s2">.</span><span class="s1">example</span><span class="s2">.</span><span class="s1">tl01e13504</span><span class="s2">;</span>
+
+<span class="s0">import </span><span class="s1">android</span><span class="s2">.</span><span class="s1">Manifest</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">android</span><span class="s2">.</span><span class="s1">annotation</span><span class="s2">.</span><span class="s1">SuppressLint</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">android</span><span class="s2">.</span><span class="s1">content</span><span class="s2">.</span><span class="s1">Intent</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">android</span><span class="s2">.</span><span class="s1">content</span><span class="s2">.</span><span class="s1">pm</span><span class="s2">.</span><span class="s1">PackageManager</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">android</span><span class="s2">.</span><span class="s1">graphics</span><span class="s2">.</span><span class="s1">Bitmap</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">android</span><span class="s2">.</span><span class="s1">graphics</span><span class="s2">.</span><span class="s1">BitmapFactory</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">android</span><span class="s2">.</span><span class="s1">graphics</span><span class="s2">.</span><span class="s1">Matrix</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">android</span><span class="s2">.</span><span class="s1">media</span><span class="s2">.</span><span class="s1">ExifInterface</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">android</span><span class="s2">.</span><span class="s1">net</span><span class="s2">.</span><span class="s1">Uri</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">android</span><span class="s2">.</span><span class="s1">os</span><span class="s2">.</span><span class="s1">Bundle</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">android</span><span class="s2">.</span><span class="s1">os</span><span class="s2">.</span><span class="s1">Environment</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">android</span><span class="s2">.</span><span class="s1">provider</span><span class="s2">.</span><span class="s1">MediaStore</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">android</span><span class="s2">.</span><span class="s1">text</span><span class="s2">.</span><span class="s1">Editable</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">android</span><span class="s2">.</span><span class="s1">text</span><span class="s2">.</span><span class="s1">TextWatcher</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">android</span><span class="s2">.</span><span class="s1">util</span><span class="s2">.</span><span class="s1">Base64</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">android</span><span class="s2">.</span><span class="s1">view</span><span class="s2">.</span><span class="s1">View</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">android</span><span class="s2">.</span><span class="s1">widget</span><span class="s2">.</span><span class="s1">ArrayAdapter</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">android</span><span class="s2">.</span><span class="s1">widget</span><span class="s2">.</span><span class="s1">Button</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">android</span><span class="s2">.</span><span class="s1">widget</span><span class="s2">.</span><span class="s1">EditText</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">android</span><span class="s2">.</span><span class="s1">widget</span><span class="s2">.</span><span class="s1">ImageView</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">android</span><span class="s2">.</span><span class="s1">widget</span><span class="s2">.</span><span class="s1">ListView</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">android</span><span class="s2">.</span><span class="s1">widget</span><span class="s2">.</span><span class="s1">Toast</span><span class="s2">;</span>
+
+<span class="s0">import </span><span class="s1">androidx</span><span class="s2">.</span><span class="s1">activity</span><span class="s2">.</span><span class="s1">EdgeToEdge</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">androidx</span><span class="s2">.</span><span class="s1">activity</span><span class="s2">.</span><span class="s1">result</span><span class="s2">.</span><span class="s1">ActivityResultLauncher</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">androidx</span><span class="s2">.</span><span class="s1">activity</span><span class="s2">.</span><span class="s1">result</span><span class="s2">.</span><span class="s1">contract</span><span class="s2">.</span><span class="s1">ActivityResultContracts</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">androidx</span><span class="s2">.</span><span class="s1">annotation</span><span class="s2">.</span><span class="s1">NonNull</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">androidx</span><span class="s2">.</span><span class="s1">appcompat</span><span class="s2">.</span><span class="s1">app</span><span class="s2">.</span><span class="s1">AlertDialog</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">androidx</span><span class="s2">.</span><span class="s1">appcompat</span><span class="s2">.</span><span class="s1">app</span><span class="s2">.</span><span class="s1">AppCompatActivity</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">androidx</span><span class="s2">.</span><span class="s1">core</span><span class="s2">.</span><span class="s1">app</span><span class="s2">.</span><span class="s1">ActivityCompat</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">androidx</span><span class="s2">.</span><span class="s1">core</span><span class="s2">.</span><span class="s1">content</span><span class="s2">.</span><span class="s1">ContextCompat</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">androidx</span><span class="s2">.</span><span class="s1">core</span><span class="s2">.</span><span class="s1">content</span><span class="s2">.</span><span class="s1">FileProvider</span><span class="s2">;</span>
+
+<span class="s3">// ➡️ IMPORTACIONES DE SQLite</span>
+<span class="s0">import </span><span class="s1">com</span><span class="s2">.</span><span class="s1">example</span><span class="s2">.</span><span class="s1">tl01e13504</span><span class="s2">.</span><span class="s1">Configuraciones</span><span class="s2">.</span><span class="s1">SQLLiteConexion</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">com</span><span class="s2">.</span><span class="s1">example</span><span class="s2">.</span><span class="s1">tl01e13504</span><span class="s2">.</span><span class="s1">Configuraciones</span><span class="s2">.</span><span class="s1">Transacciones</span><span class="s2">; </span><span class="s3">// Asegúrate de que esta clase exista y sea 'Transacciones'</span>
+
+<span class="s0">import </span><span class="s1">java</span><span class="s2">.</span><span class="s1">io</span><span class="s2">.</span><span class="s1">ByteArrayOutputStream</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">java</span><span class="s2">.</span><span class="s1">io</span><span class="s2">.</span><span class="s1">File</span><span class="s2">;</span>
+
+<span class="s0">public class </span><span class="s1">MainActivity </span><span class="s0">extends </span><span class="s1">AppCompatActivity </span><span class="s2">{</span>
+
+    <span class="s3">//Declaracion de variables Globales</span>
+    <span class="s1">EditText nombre</span><span class="s2">, </span><span class="s1">telefono</span><span class="s2">, </span><span class="s1">nota</span><span class="s2">, </span><span class="s1">buscarpais</span><span class="s2">;</span>
+    <span class="s1">ListView listaPaises</span><span class="s2">;</span>
+    <span class="s1">ArrayAdapter</span><span class="s2">&lt;</span><span class="s1">String</span><span class="s2">&gt; </span><span class="s1">adaptador</span><span class="s2">;</span>
+    <span class="s1">String</span><span class="s2">[] </span><span class="s1">paises </span><span class="s2">= {</span>
+            <span class="s4">&quot;Honduras (504)&quot;</span><span class="s2">, </span><span class="s4">&quot;Costa Rica (506)&quot;</span><span class="s2">, </span><span class="s4">&quot;Guatemala (502)&quot;</span><span class="s2">,</span>
+            <span class="s4">&quot;El Salvador (503)&quot;</span><span class="s2">, </span><span class="s4">&quot;Nicaragua (505)&quot;</span><span class="s2">, </span><span class="s4">&quot;Panamá (507)&quot;</span>
+    <span class="s2">};</span>
+    <span class="s1">ImageView imageView</span><span class="s2">;</span>
+    <span class="s1">Button btnfoto</span><span class="s2">, </span><span class="s1">btnsalvarcontacto</span><span class="s2">, </span><span class="s1">btncontactossalvados</span><span class="s2">;</span>
+    <span class="s0">private static final int </span><span class="s1">PERMISO_CAMARA </span><span class="s2">= </span><span class="s5">101</span><span class="s2">;</span>
+    <span class="s0">private </span><span class="s1">String fotoBase64 </span><span class="s2">= </span><span class="s0">null</span><span class="s2">;</span>
+    <span class="s0">private </span><span class="s1">File fotoFile</span><span class="s2">;</span>
+
+    <span class="s1">ActivityResultLauncher</span><span class="s2">&lt;</span><span class="s1">Intent</span><span class="s2">&gt; </span><span class="s1">tomarFotoLauncher</span><span class="s2">;</span>
+    <span class="s0">private </span><span class="s1">String codigoPaisSeleccionado </span><span class="s2">= </span><span class="s4">&quot;&quot;</span><span class="s2">;</span>
+
+
+    <span class="s1">@SuppressLint</span><span class="s2">(</span><span class="s4">&quot;MissingInflatedId&quot;</span><span class="s2">)</span>
+    <span class="s1">@Override</span>
+    <span class="s0">protected void </span><span class="s1">onCreate</span><span class="s2">(</span><span class="s1">Bundle savedInstanceState</span><span class="s2">) {</span>
+        <span class="s0">super</span><span class="s2">.</span><span class="s1">onCreate</span><span class="s2">(</span><span class="s1">savedInstanceState</span><span class="s2">);</span>
+        <span class="s1">EdgeToEdge</span><span class="s2">.</span><span class="s1">enable</span><span class="s2">(</span><span class="s0">this</span><span class="s2">);</span>
+        <span class="s1">setContentView</span><span class="s2">(</span><span class="s1">R</span><span class="s2">.</span><span class="s1">layout</span><span class="s2">.</span><span class="s1">activity_main</span><span class="s2">);</span>
+
+        <span class="s3">// 1. Inicialización de Vistas</span>
+        <span class="s1">buscarpais </span><span class="s2">= </span><span class="s1">findViewById</span><span class="s2">(</span><span class="s1">R</span><span class="s2">.</span><span class="s1">id</span><span class="s2">.</span><span class="s1">buscarPais</span><span class="s2">);</span>
+        <span class="s1">listaPaises </span><span class="s2">= </span><span class="s1">findViewById</span><span class="s2">(</span><span class="s1">R</span><span class="s2">.</span><span class="s1">id</span><span class="s2">.</span><span class="s1">listapaises</span><span class="s2">);</span>
+        <span class="s1">nombre </span><span class="s2">= </span><span class="s1">findViewById</span><span class="s2">(</span><span class="s1">R</span><span class="s2">.</span><span class="s1">id</span><span class="s2">.</span><span class="s1">nombre</span><span class="s2">);</span>
+        <span class="s1">telefono </span><span class="s2">= </span><span class="s1">findViewById</span><span class="s2">(</span><span class="s1">R</span><span class="s2">.</span><span class="s1">id</span><span class="s2">.</span><span class="s1">telefono</span><span class="s2">);</span>
+        <span class="s1">nota </span><span class="s2">= </span><span class="s1">findViewById</span><span class="s2">(</span><span class="s1">R</span><span class="s2">.</span><span class="s1">id</span><span class="s2">.</span><span class="s1">nota</span><span class="s2">);</span>
+        <span class="s1">imageView </span><span class="s2">= </span><span class="s1">findViewById</span><span class="s2">(</span><span class="s1">R</span><span class="s2">.</span><span class="s1">id</span><span class="s2">.</span><span class="s1">imageView</span><span class="s2">);</span>
+
+        <span class="s1">btnfoto </span><span class="s2">= </span><span class="s1">findViewById</span><span class="s2">(</span><span class="s1">R</span><span class="s2">.</span><span class="s1">id</span><span class="s2">.</span><span class="s1">btnfoto</span><span class="s2">);</span>
+        <span class="s1">btnsalvarcontacto </span><span class="s2">= </span><span class="s1">findViewById</span><span class="s2">(</span><span class="s1">R</span><span class="s2">.</span><span class="s1">id</span><span class="s2">.</span><span class="s1">btnsalvarcontacto</span><span class="s2">);</span>
+        <span class="s1">btncontactossalvados </span><span class="s2">= </span><span class="s1">findViewById</span><span class="s2">(</span><span class="s1">R</span><span class="s2">.</span><span class="s1">id</span><span class="s2">.</span><span class="s1">btncontactossalvados</span><span class="s2">);</span>
+
+        <span class="s3">// --- 2. LÓGICA DEL LISTVIEW DE PAÍSES ---</span>
+        <span class="s1">adaptador </span><span class="s2">= </span><span class="s0">new </span><span class="s1">ArrayAdapter</span><span class="s2">&lt;&gt;(</span><span class="s0">this</span><span class="s2">, </span><span class="s1">android</span><span class="s2">.</span><span class="s1">R</span><span class="s2">.</span><span class="s1">layout</span><span class="s2">.</span><span class="s1">simple_list_item_1</span><span class="s2">, </span><span class="s1">paises</span><span class="s2">);</span>
+        <span class="s1">listaPaises</span><span class="s2">.</span><span class="s1">setAdapter</span><span class="s2">(</span><span class="s1">adaptador</span><span class="s2">);</span>
+
+        <span class="s3">// Filtro de búsqueda (TextWatcher)</span>
+        <span class="s1">buscarpais</span><span class="s2">.</span><span class="s1">addTextChangedListener</span><span class="s2">(</span><span class="s0">new </span><span class="s1">TextWatcher</span><span class="s2">() {</span>
+            <span class="s1">@Override</span>
+            <span class="s0">public void </span><span class="s1">beforeTextChanged</span><span class="s2">(</span><span class="s1">CharSequence s</span><span class="s2">, </span><span class="s0">int </span><span class="s1">start</span><span class="s2">, </span><span class="s0">int </span><span class="s1">count</span><span class="s2">, </span><span class="s0">int </span><span class="s1">after</span><span class="s2">) { }</span>
+
+            <span class="s1">@Override</span>
+            <span class="s0">public void </span><span class="s1">onTextChanged</span><span class="s2">(</span><span class="s1">CharSequence s</span><span class="s2">, </span><span class="s0">int </span><span class="s1">start</span><span class="s2">, </span><span class="s0">int </span><span class="s1">before</span><span class="s2">, </span><span class="s0">int </span><span class="s1">count</span><span class="s2">) {</span>
+                <span class="s1">adaptador</span><span class="s2">.</span><span class="s1">getFilter</span><span class="s2">().</span><span class="s1">filter</span><span class="s2">(</span><span class="s1">s</span><span class="s2">);</span>
+            <span class="s2">}</span>
+            <span class="s1">@Override</span>
+            <span class="s0">public void </span><span class="s1">afterTextChanged</span><span class="s2">(</span><span class="s1">Editable s</span><span class="s2">) { }</span>
+        <span class="s2">});</span>
+
+        <span class="s3">// Listener que guarda el código de país (CLAVE)</span>
+        <span class="s1">listaPaises</span><span class="s2">.</span><span class="s1">setOnItemClickListener</span><span class="s2">((</span><span class="s1">parent</span><span class="s2">, </span><span class="s1">view</span><span class="s2">, </span><span class="s1">position</span><span class="s2">, </span><span class="s1">id</span><span class="s2">) </span><span class="s1">-&gt; </span><span class="s2">{</span>
+            <span class="s1">String paisSeleccionado </span><span class="s2">= (</span><span class="s1">String</span><span class="s2">) </span><span class="s1">parent</span><span class="s2">.</span><span class="s1">getItemAtPosition</span><span class="s2">(</span><span class="s1">position</span><span class="s2">);</span>
+
+            <span class="s0">int </span><span class="s1">inicio </span><span class="s2">= </span><span class="s1">paisSeleccionado</span><span class="s2">.</span><span class="s1">indexOf</span><span class="s2">(</span><span class="s4">&quot;(&quot;</span><span class="s2">);</span>
+            <span class="s0">int </span><span class="s1">fin </span><span class="s2">= </span><span class="s1">paisSeleccionado</span><span class="s2">.</span><span class="s1">indexOf</span><span class="s2">(</span><span class="s4">&quot;)&quot;</span><span class="s2">);</span>
+            <span class="s0">if </span><span class="s2">(</span><span class="s1">inicio </span><span class="s2">!= -</span><span class="s5">1 </span><span class="s2">&amp;&amp; </span><span class="s1">fin </span><span class="s2">!= -</span><span class="s5">1</span><span class="s2">) {</span>
+                <span class="s1">codigoPaisSeleccionado </span><span class="s2">= </span><span class="s1">paisSeleccionado</span><span class="s2">.</span><span class="s1">substring</span><span class="s2">(</span><span class="s1">inicio </span><span class="s2">+ </span><span class="s5">1</span><span class="s2">, </span><span class="s1">fin</span><span class="s2">);</span>
+            <span class="s2">} </span><span class="s0">else </span><span class="s2">{</span>
+                <span class="s1">codigoPaisSeleccionado </span><span class="s2">= </span><span class="s4">&quot;&quot;</span><span class="s2">;</span>
+            <span class="s2">}</span>
+            <span class="s1">Toast</span><span class="s2">.</span><span class="s1">makeText</span><span class="s2">(</span><span class="s1">MainActivity</span><span class="s2">.</span><span class="s0">this</span><span class="s2">, </span><span class="s4">&quot;Código de País Seleccionado: &quot; </span><span class="s2">+ </span><span class="s1">codigoPaisSeleccionado</span><span class="s2">, </span><span class="s1">Toast</span><span class="s2">.</span><span class="s1">LENGTH_SHORT</span><span class="s2">).</span><span class="s1">show</span><span class="s2">();</span>
+        <span class="s2">});</span>
+
+        <span class="s3">// 3. LISTENERS DE BOTONES</span>
+
+        <span class="s3">// ➡️ BOTÓN SALVAR CONTACTO: Llama a la validación antes de guardar en SQLite</span>
+        <span class="s1">btnsalvarcontacto</span><span class="s2">.</span><span class="s1">setOnClickListener</span><span class="s2">(</span><span class="s0">new </span><span class="s1">View</span><span class="s2">.</span><span class="s1">OnClickListener</span><span class="s2">() {</span>
+            <span class="s1">@Override</span>
+            <span class="s0">public void </span><span class="s1">onClick</span><span class="s2">(</span><span class="s1">View view</span><span class="s2">) {</span>
+                <span class="s1">validarCampos</span><span class="s2">();</span>
+                <span class="s1">guardarContacto</span><span class="s2">();</span>
+
+            <span class="s2">}</span>
+        <span class="s2">});</span>
+
+        <span class="s1">btnfoto</span><span class="s2">.</span><span class="s1">setOnClickListener</span><span class="s2">(</span><span class="s0">new </span><span class="s1">View</span><span class="s2">.</span><span class="s1">OnClickListener</span><span class="s2">() {</span>
+            <span class="s1">@Override</span>
+            <span class="s0">public void </span><span class="s1">onClick</span><span class="s2">(</span><span class="s1">View view</span><span class="s2">) {</span>
+                <span class="s1">Permisos</span><span class="s2">();</span>
+
+            <span class="s2">}</span>
+        <span class="s2">});</span>
+
+        <span class="s3">// ➡️ BOTÓN CONTACTOS SALVADOS: Navega a la ActivitySegunda</span>
+        <span class="s1">btncontactossalvados</span><span class="s2">.</span><span class="s1">setOnClickListener</span><span class="s2">(</span><span class="s0">new </span><span class="s1">View</span><span class="s2">.</span><span class="s1">OnClickListener</span><span class="s2">() {</span>
+            <span class="s1">@Override</span>
+            <span class="s0">public void </span><span class="s1">onClick</span><span class="s2">(</span><span class="s1">View view</span><span class="s2">) {</span>
+                <span class="s1">Intent intent </span><span class="s2">= </span><span class="s0">new </span><span class="s1">Intent</span><span class="s2">(</span><span class="s1">MainActivity</span><span class="s2">.</span><span class="s0">this</span><span class="s2">, </span><span class="s1">ActivitySegunda</span><span class="s2">.</span><span class="s0">class</span><span class="s2">);</span>
+                <span class="s1">startActivity</span><span class="s2">(</span><span class="s1">intent</span><span class="s2">);</span>
+            <span class="s2">}</span>
+        <span class="s2">});</span>
+
+        <span class="s3">// Inicialización del ActivityResultLauncher para la cámara</span>
+        <span class="s1">inicializarCamaraLauncher</span><span class="s2">();</span>
+    <span class="s2">}</span>
+
+    <span class="s0">private void </span><span class="s1">inicializarCamaraLauncher</span><span class="s2">() {</span>
+        <span class="s1">tomarFotoLauncher </span><span class="s2">= </span><span class="s1">registerForActivityResult</span><span class="s2">(</span>
+                <span class="s0">new </span><span class="s1">ActivityResultContracts</span><span class="s2">.</span><span class="s1">StartActivityForResult</span><span class="s2">(),</span>
+                <span class="s1">result -&gt; </span><span class="s2">{</span>
+                    <span class="s0">if </span><span class="s2">(</span><span class="s1">result</span><span class="s2">.</span><span class="s1">getResultCode</span><span class="s2">() == </span><span class="s1">RESULT_OK</span><span class="s2">) {</span>
+                        <span class="s0">if </span><span class="s2">(</span><span class="s1">fotoFile </span><span class="s2">!= </span><span class="s0">null </span><span class="s2">&amp;&amp; </span><span class="s1">fotoFile</span><span class="s2">.</span><span class="s1">exists</span><span class="s2">()) {</span>
+                            <span class="s0">try </span><span class="s2">{</span>
+                                <span class="s1">Bitmap foto </span><span class="s2">= </span><span class="s1">BitmapFactory</span><span class="s2">.</span><span class="s1">decodeFile</span><span class="s2">(</span><span class="s1">fotoFile</span><span class="s2">.</span><span class="s1">getAbsolutePath</span><span class="s2">());</span>
+                                <span class="s1">ExifInterface exif </span><span class="s2">= </span><span class="s0">new </span><span class="s1">ExifInterface</span><span class="s2">(</span><span class="s1">fotoFile</span><span class="s2">.</span><span class="s1">getAbsolutePath</span><span class="s2">());</span>
+                                <span class="s0">int </span><span class="s1">orientation </span><span class="s2">= </span><span class="s1">exif</span><span class="s2">.</span><span class="s1">getAttributeInt</span><span class="s2">(</span>
+                                        <span class="s1">ExifInterface</span><span class="s2">.</span><span class="s1">TAG_ORIENTATION</span><span class="s2">, </span><span class="s1">ExifInterface</span><span class="s2">.</span><span class="s1">ORIENTATION_NORMAL</span><span class="s2">);</span>
+                                <span class="s0">int </span><span class="s1">rotationInDegrees </span><span class="s2">= </span><span class="s1">exifToDegrees</span><span class="s2">(</span><span class="s1">orientation</span><span class="s2">);</span>
+
+                                <span class="s1">Bitmap rotatedBitmap </span><span class="s2">= </span><span class="s1">foto</span><span class="s2">;</span>
+                                <span class="s0">if </span><span class="s2">(</span><span class="s1">rotationInDegrees </span><span class="s2">!= </span><span class="s5">0</span><span class="s2">) {</span>
+                                    <span class="s1">Matrix matrix </span><span class="s2">= </span><span class="s0">new </span><span class="s1">Matrix</span><span class="s2">();</span>
+                                    <span class="s1">matrix</span><span class="s2">.</span><span class="s1">preRotate</span><span class="s2">(</span><span class="s1">rotationInDegrees</span><span class="s2">);</span>
+                                    <span class="s1">rotatedBitmap </span><span class="s2">= </span><span class="s1">Bitmap</span><span class="s2">.</span><span class="s1">createBitmap</span><span class="s2">(</span><span class="s1">foto</span><span class="s2">, </span><span class="s5">0</span><span class="s2">, </span><span class="s5">0</span><span class="s2">,</span>
+                                            <span class="s1">foto</span><span class="s2">.</span><span class="s1">getWidth</span><span class="s2">(), </span><span class="s1">foto</span><span class="s2">.</span><span class="s1">getHeight</span><span class="s2">(), </span><span class="s1">matrix</span><span class="s2">, </span><span class="s0">true</span><span class="s2">);</span>
+                                <span class="s2">}</span>
+                                <span class="s1">imageView</span><span class="s2">.</span><span class="s1">setImageBitmap</span><span class="s2">(</span><span class="s1">rotatedBitmap</span><span class="s2">);</span>
+                                <span class="s1">fotoBase64 </span><span class="s2">= </span><span class="s1">bitmapToBase64</span><span class="s2">(</span><span class="s1">rotatedBitmap</span><span class="s2">);</span>
+
+                            <span class="s2">} </span><span class="s0">catch </span><span class="s2">(</span><span class="s1">Exception e</span><span class="s2">) {</span>
+                                <span class="s1">e</span><span class="s2">.</span><span class="s1">printStackTrace</span><span class="s2">();</span>
+                                <span class="s1">Toast</span><span class="s2">.</span><span class="s1">makeText</span><span class="s2">(</span><span class="s1">MainActivity</span><span class="s2">.</span><span class="s0">this</span><span class="s2">, </span><span class="s4">&quot;Error al procesar la foto&quot;</span><span class="s2">, </span><span class="s1">Toast</span><span class="s2">.</span><span class="s1">LENGTH_LONG</span><span class="s2">).</span><span class="s1">show</span><span class="s2">();</span>
+                            <span class="s2">}</span>
+                        <span class="s2">} </span><span class="s0">else </span><span class="s2">{</span>
+                            <span class="s1">Toast</span><span class="s2">.</span><span class="s1">makeText</span><span class="s2">(</span><span class="s1">MainActivity</span><span class="s2">.</span><span class="s0">this</span><span class="s2">, </span><span class="s4">&quot;No se pudo obtener la foto&quot;</span><span class="s2">, </span><span class="s1">Toast</span><span class="s2">.</span><span class="s1">LENGTH_LONG</span><span class="s2">).</span><span class="s1">show</span><span class="s2">();</span>
+                        <span class="s2">}</span>
+                    <span class="s2">}</span>
+                <span class="s2">}</span>
+        <span class="s2">);</span>
+    <span class="s2">}</span>
+
+    <span class="s3">// ... [MÉTODOS AUXILIARES: bitmapToBase64, exifToDegrees, Permisos, onRequestPermissionsResult, OpenCamara] ...</span>
+
+    <span class="s3">// [Nota: Dejé los métodos auxiliares de la cámara/permisos fuera de esta respuesta para no duplicar código,</span>
+    <span class="s3">// pero deben estar presentes y completos en tu archivo.]</span>
+
+    <span class="s0">private </span><span class="s1">String bitmapToBase64</span><span class="s2">(</span><span class="s1">Bitmap bitmap</span><span class="s2">) {</span>
+        <span class="s1">ByteArrayOutputStream outputStream </span><span class="s2">= </span><span class="s0">new </span><span class="s1">ByteArrayOutputStream</span><span class="s2">();</span>
+        <span class="s1">bitmap</span><span class="s2">.</span><span class="s1">compress</span><span class="s2">(</span><span class="s1">Bitmap</span><span class="s2">.</span><span class="s1">CompressFormat</span><span class="s2">.</span><span class="s1">PNG</span><span class="s2">, </span><span class="s5">100</span><span class="s2">, </span><span class="s1">outputStream</span><span class="s2">);</span>
+        <span class="s0">byte</span><span class="s2">[] </span><span class="s1">byteArray </span><span class="s2">= </span><span class="s1">outputStream</span><span class="s2">.</span><span class="s1">toByteArray</span><span class="s2">();</span>
+        <span class="s0">return </span><span class="s1">Base64</span><span class="s2">.</span><span class="s1">encodeToString</span><span class="s2">(</span><span class="s1">byteArray</span><span class="s2">, </span><span class="s1">Base64</span><span class="s2">.</span><span class="s1">DEFAULT</span><span class="s2">);</span>
+    <span class="s2">}</span>
+
+    <span class="s0">private int </span><span class="s1">exifToDegrees</span><span class="s2">(</span><span class="s0">int </span><span class="s1">exifOrientation</span><span class="s2">) {</span>
+        <span class="s0">switch </span><span class="s2">(</span><span class="s1">exifOrientation</span><span class="s2">) {</span>
+            <span class="s0">case </span><span class="s1">ExifInterface</span><span class="s2">.</span><span class="s1">ORIENTATION_ROTATE_90</span><span class="s2">:</span>
+                <span class="s0">return </span><span class="s5">90</span><span class="s2">;</span>
+            <span class="s0">case </span><span class="s1">ExifInterface</span><span class="s2">.</span><span class="s1">ORIENTATION_ROTATE_180</span><span class="s2">:</span>
+                <span class="s0">return </span><span class="s5">180</span><span class="s2">;</span>
+            <span class="s0">case </span><span class="s1">ExifInterface</span><span class="s2">.</span><span class="s1">ORIENTATION_ROTATE_270</span><span class="s2">:</span>
+                <span class="s0">return </span><span class="s5">270</span><span class="s2">;</span>
+            <span class="s0">default</span><span class="s2">:</span>
+                <span class="s0">return </span><span class="s5">0</span><span class="s2">;</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+
+    <span class="s0">private void </span><span class="s1">Permisos</span><span class="s2">() {</span>
+        <span class="s0">if </span><span class="s2">(</span><span class="s1">ContextCompat</span><span class="s2">.</span><span class="s1">checkSelfPermission</span><span class="s2">(</span><span class="s0">this</span><span class="s2">, </span><span class="s1">Manifest</span><span class="s2">.</span><span class="s1">permission</span><span class="s2">.</span><span class="s1">CAMERA</span><span class="s2">) !=</span>
+                <span class="s1">PackageManager</span><span class="s2">.</span><span class="s1">PERMISSION_GRANTED</span><span class="s2">) {</span>
+            <span class="s1">ActivityCompat</span><span class="s2">.</span><span class="s1">requestPermissions</span><span class="s2">(</span><span class="s0">this</span><span class="s2">,</span>
+                    <span class="s0">new </span><span class="s1">String</span><span class="s2">[]{</span><span class="s1">Manifest</span><span class="s2">.</span><span class="s1">permission</span><span class="s2">.</span><span class="s1">CAMERA</span><span class="s2">}, </span><span class="s1">PERMISO_CAMARA</span><span class="s2">);</span>
+        <span class="s2">} </span><span class="s0">else </span><span class="s2">{</span>
+            <span class="s1">OpenCamara</span><span class="s2">();</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+
+    <span class="s1">@Override</span>
+    <span class="s0">public void </span><span class="s1">onRequestPermissionsResult</span><span class="s2">(</span><span class="s0">int </span><span class="s1">requestCode</span><span class="s2">, </span><span class="s1">@NonNull String</span><span class="s2">[] </span><span class="s1">permissions</span><span class="s2">, </span><span class="s1">@NonNull </span><span class="s0">int</span><span class="s2">[] </span><span class="s1">grantResults</span><span class="s2">) {</span>
+        <span class="s0">super</span><span class="s2">.</span><span class="s1">onRequestPermissionsResult</span><span class="s2">(</span><span class="s1">requestCode</span><span class="s2">, </span><span class="s1">permissions</span><span class="s2">, </span><span class="s1">grantResults</span><span class="s2">);</span>
+        <span class="s0">if </span><span class="s2">(</span><span class="s1">requestCode </span><span class="s2">== </span><span class="s1">PERMISO_CAMARA</span><span class="s2">) {</span>
+            <span class="s0">if </span><span class="s2">(</span><span class="s1">grantResults</span><span class="s2">.</span><span class="s1">length </span><span class="s2">&gt; </span><span class="s5">0 </span><span class="s2">&amp;&amp; </span><span class="s1">grantResults</span><span class="s2">[</span><span class="s5">0</span><span class="s2">] == </span><span class="s1">PackageManager</span><span class="s2">.</span><span class="s1">PERMISSION_GRANTED</span><span class="s2">) {</span>
+                <span class="s1">OpenCamara</span><span class="s2">();</span>
+            <span class="s2">} </span><span class="s0">else </span><span class="s2">{</span>
+                <span class="s1">Toast</span><span class="s2">.</span><span class="s1">makeText</span><span class="s2">(</span><span class="s0">this</span><span class="s2">, </span><span class="s4">&quot;Permiso de Camara denegado &quot;</span><span class="s2">, </span><span class="s1">Toast</span><span class="s2">.</span><span class="s1">LENGTH_LONG</span><span class="s2">).</span><span class="s1">show</span><span class="s2">();</span>
+            <span class="s2">}</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+
+    <span class="s0">private void </span><span class="s1">OpenCamara</span><span class="s2">() {</span>
+        <span class="s0">try </span><span class="s2">{</span>
+            <span class="s1">fotoFile </span><span class="s2">= </span><span class="s0">new </span><span class="s1">File</span><span class="s2">(</span><span class="s1">getExternalFilesDir</span><span class="s2">(</span><span class="s1">Environment</span><span class="s2">.</span><span class="s1">DIRECTORY_PICTURES</span><span class="s2">),</span>
+                    <span class="s4">&quot;foto_&quot; </span><span class="s2">+ </span><span class="s1">System</span><span class="s2">.</span><span class="s1">currentTimeMillis</span><span class="s2">() + </span><span class="s4">&quot;.jpg&quot;</span><span class="s2">);</span>
+            <span class="s1">Uri fotoUri </span><span class="s2">= </span><span class="s1">FileProvider</span><span class="s2">.</span><span class="s1">getUriForFile</span><span class="s2">(</span><span class="s0">this</span><span class="s2">,</span>
+                    <span class="s1">getPackageName</span><span class="s2">() + </span><span class="s4">&quot;.provider&quot;</span><span class="s2">,</span>
+                    <span class="s1">fotoFile</span>
+            <span class="s2">);</span>
+            <span class="s1">Intent intent </span><span class="s2">= </span><span class="s0">new </span><span class="s1">Intent</span><span class="s2">(</span><span class="s1">MediaStore</span><span class="s2">.</span><span class="s1">ACTION_IMAGE_CAPTURE</span><span class="s2">);</span>
+            <span class="s1">intent</span><span class="s2">.</span><span class="s1">putExtra</span><span class="s2">(</span><span class="s1">MediaStore</span><span class="s2">.</span><span class="s1">EXTRA_OUTPUT</span><span class="s2">, </span><span class="s1">fotoUri</span><span class="s2">);</span>
+            <span class="s1">tomarFotoLauncher</span><span class="s2">.</span><span class="s1">launch</span><span class="s2">(</span><span class="s1">intent</span><span class="s2">);</span>
+        <span class="s2">} </span><span class="s0">catch </span><span class="s2">(</span><span class="s1">Exception ex</span><span class="s2">) {</span>
+            <span class="s1">ex</span><span class="s2">.</span><span class="s1">printStackTrace</span><span class="s2">();</span>
+            <span class="s1">Toast</span><span class="s2">.</span><span class="s1">makeText</span><span class="s2">(</span><span class="s0">this</span><span class="s2">, </span><span class="s4">&quot;Error al abrir cámara: &quot; </span><span class="s2">+ </span><span class="s1">ex</span><span class="s2">.</span><span class="s1">getMessage</span><span class="s2">(), </span><span class="s1">Toast</span><span class="s2">.</span><span class="s1">LENGTH_LONG</span><span class="s2">).</span><span class="s1">show</span><span class="s2">();</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+
+    <span class="s0">private void </span><span class="s1">validarCampos</span><span class="s2">() {</span>
+        <span class="s1">String nombreStr </span><span class="s2">= </span><span class="s1">nombre</span><span class="s2">.</span><span class="s1">getText</span><span class="s2">().</span><span class="s1">toString</span><span class="s2">().</span><span class="s1">trim</span><span class="s2">();</span>
+        <span class="s1">String telefonoStr </span><span class="s2">= </span><span class="s1">telefono</span><span class="s2">.</span><span class="s1">getText</span><span class="s2">().</span><span class="s1">toString</span><span class="s2">().</span><span class="s1">trim</span><span class="s2">();</span>
+        <span class="s3">// String notaStr = nota.getText().toString().trim(); // Se recoge más abajo</span>
+
+        <span class="s1">StringBuilder mensajeError </span><span class="s2">= </span><span class="s0">new </span><span class="s1">StringBuilder</span><span class="s2">();</span>
+
+        <span class="s0">if </span><span class="s2">(</span><span class="s1">nombreStr</span><span class="s2">.</span><span class="s1">isEmpty</span><span class="s2">()) {</span>
+            <span class="s1">mensajeError</span><span class="s2">.</span><span class="s1">append</span><span class="s2">(</span><span class="s4">&quot;- El campo **Nombre** está vacío.</span><span class="s0">\n</span><span class="s4">&quot;</span><span class="s2">);</span>
+        <span class="s2">}</span>
+        <span class="s0">if </span><span class="s2">(</span><span class="s1">telefonoStr</span><span class="s2">.</span><span class="s1">isEmpty</span><span class="s2">()) {</span>
+            <span class="s1">mensajeError</span><span class="s2">.</span><span class="s1">append</span><span class="s2">(</span><span class="s4">&quot;- El campo **Teléfono** está vacío.</span><span class="s0">\n</span><span class="s4">&quot;</span><span class="s2">);</span>
+        <span class="s2">}</span>
+        <span class="s3">// Nota: Si 'nota' es obligatorio, descomenta:</span>
+        <span class="s3">// if (notaStr.isEmpty()) { mensajeError.append(&quot;- El campo Nota está vacío.\n&quot;); }</span>
+
+        <span class="s0">if </span><span class="s2">(</span><span class="s1">codigoPaisSeleccionado</span><span class="s2">.</span><span class="s1">isEmpty</span><span class="s2">()) {</span>
+            <span class="s1">mensajeError</span><span class="s2">.</span><span class="s1">append</span><span class="s2">(</span><span class="s4">&quot;- Por favor, selecciona un **código de país**.</span><span class="s0">\n</span><span class="s4">&quot;</span><span class="s2">);</span>
+        <span class="s2">}</span>
+
+        <span class="s0">if </span><span class="s2">(</span><span class="s1">mensajeError</span><span class="s2">.</span><span class="s1">length</span><span class="s2">() &gt; </span><span class="s5">0</span><span class="s2">) {</span>
+            <span class="s1">mostrarAlerta</span><span class="s2">(</span><span class="s1">mensajeError</span><span class="s2">.</span><span class="s1">toString</span><span class="s2">());</span>
+        <span class="s2">} </span><span class="s0">else </span><span class="s2">{</span>
+            <span class="s1">guardarContacto</span><span class="s2">();</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+
+    <span class="s0">private void </span><span class="s1">mostrarAlerta </span><span class="s2">(</span><span class="s1">String mensaje</span><span class="s2">){</span>
+        <span class="s1">AlertDialog</span><span class="s2">.</span><span class="s1">Builder builder </span><span class="s2">= </span><span class="s0">new </span><span class="s1">AlertDialog</span><span class="s2">.</span><span class="s1">Builder</span><span class="s2">(</span><span class="s1">MainActivity</span><span class="s2">.</span><span class="s0">this</span><span class="s2">);</span>
+        <span class="s1">builder</span><span class="s2">.</span><span class="s1">setTitle</span><span class="s2">(</span><span class="s4">&quot;⚠️ Campos Obligatorios&quot;</span><span class="s2">);</span>
+        <span class="s1">builder</span><span class="s2">.</span><span class="s1">setMessage</span><span class="s2">(</span><span class="s1">mensaje</span><span class="s2">);</span>
+        <span class="s1">builder</span><span class="s2">.</span><span class="s1">setPositiveButton</span><span class="s2">(</span><span class="s4">&quot;OK&quot;</span><span class="s2">, (</span><span class="s1">dialog</span><span class="s2">, </span><span class="s1">which</span><span class="s2">) </span><span class="s1">-&gt; dialog</span><span class="s2">.</span><span class="s1">dismiss</span><span class="s2">());</span>
+        <span class="s1">builder</span><span class="s2">.</span><span class="s1">show</span><span class="s2">();</span>
+    <span class="s2">}</span>
+
+    <span class="s6">/**</span>
+     <span class="s6">* 🚀 IMPLEMENTACIÓN FINAL DEL GUARDADO EN SQLite</span>
+     <span class="s6">*/</span>
+    <span class="s0">private void </span><span class="s1">guardarContacto</span><span class="s2">() {</span>
+        <span class="s1">String nombreStr </span><span class="s2">= </span><span class="s1">nombre</span><span class="s2">.</span><span class="s1">getText</span><span class="s2">().</span><span class="s1">toString</span><span class="s2">();</span>
+        <span class="s1">String telefonoStr </span><span class="s2">= </span><span class="s1">telefono</span><span class="s2">.</span><span class="s1">getText</span><span class="s2">().</span><span class="s1">toString</span><span class="s2">();</span>
+        <span class="s1">String notaStr </span><span class="s2">= </span><span class="s1">nota</span><span class="s2">.</span><span class="s1">getText</span><span class="s2">().</span><span class="s1">toString</span><span class="s2">();</span>
+        <span class="s1">String listapais </span><span class="s2">= </span><span class="s1">listaPaises</span><span class="s2">.</span><span class="s1">getSelectedItem</span><span class="s2">().</span><span class="s1">toString</span><span class="s2">();</span>
+
+
+        <span class="s3">// 1. Crear la instancia de la conexión</span>
+        <span class="s1">SQLLiteConexion dbContactos </span><span class="s2">= </span><span class="s0">new </span><span class="s1">SQLLiteConexion</span><span class="s2">(</span>
+                <span class="s0">this</span><span class="s2">,</span>
+                <span class="s1">Transacciones</span><span class="s2">.</span><span class="s1">DBNAME</span><span class="s2">, </span><span class="s3">// Nombre de la BD</span>
+                <span class="s0">null</span><span class="s2">,</span>
+                <span class="s1">Transacciones</span><span class="s2">.</span><span class="s1">DBVERSION </span><span class="s3">// Versión</span>
+        <span class="s2">);</span>
+
+        <span class="s3">// 2. Llamar al método de inserción (debe existir en SQLLiteConexion)</span>
+        <span class="s0">long </span><span class="s1">id </span><span class="s2">= </span><span class="s1">dbContactos</span><span class="s2">.</span><span class="s1">insertarContacto</span><span class="s2">(</span>
+                <span class="s1">nombreStr</span><span class="s2">,</span>
+                <span class="s1">telefonoStr</span><span class="s2">,</span>
+                <span class="s1">notaStr</span><span class="s2">,</span>
+                <span class="s1">listapais </span><span class="s2">,</span>
+                <span class="s1">fotoBase64</span>
+        <span class="s2">);</span>
+
+        <span class="s3">// 3. Manejar el resultado</span>
+        <span class="s0">if </span><span class="s2">(</span><span class="s1">id </span><span class="s2">&gt; </span><span class="s5">0</span><span class="s2">) {</span>
+            <span class="s1">Toast</span><span class="s2">.</span><span class="s1">makeText</span><span class="s2">(</span><span class="s1">MainActivity</span><span class="s2">.</span><span class="s0">this</span><span class="s2">, </span><span class="s4">&quot;✅ Contacto Guardado Exitosamente (ID: &quot; </span><span class="s2">+ </span><span class="s1">id </span><span class="s2">+ </span><span class="s4">&quot;)&quot;</span><span class="s2">, </span><span class="s1">Toast</span><span class="s2">.</span><span class="s1">LENGTH_LONG</span><span class="s2">).</span><span class="s1">show</span><span class="s2">();</span>
+
+            <span class="s3">// Limpiar campos</span>
+            <span class="s1">nombre</span><span class="s2">.</span><span class="s1">setText</span><span class="s2">(</span><span class="s4">&quot;&quot;</span><span class="s2">);</span>
+            <span class="s1">telefono</span><span class="s2">.</span><span class="s1">setText</span><span class="s2">(</span><span class="s4">&quot;&quot;</span><span class="s2">);</span>
+            <span class="s1">nota</span><span class="s2">.</span><span class="s1">setText</span><span class="s2">(</span><span class="s4">&quot;&quot;</span><span class="s2">);</span>
+            <span class="s1">imageView</span><span class="s2">.</span><span class="s1">setImageDrawable</span><span class="s2">(</span><span class="s0">null</span><span class="s2">);</span>
+            <span class="s1">fotoBase64 </span><span class="s2">= </span><span class="s0">null</span><span class="s2">;</span>
+            <span class="s1">codigoPaisSeleccionado </span><span class="s2">= </span><span class="s4">&quot;&quot;</span><span class="s2">;</span>
+
+            <span class="s3">// Navegar a ActivitySegunda después de guardar</span>
+            <span class="s1">Intent intent </span><span class="s2">= </span><span class="s0">new </span><span class="s1">Intent</span><span class="s2">(</span><span class="s1">MainActivity</span><span class="s2">.</span><span class="s0">this</span><span class="s2">, </span><span class="s1">ActivitySegunda</span><span class="s2">.</span><span class="s0">class</span><span class="s2">);</span>
+            <span class="s1">startActivity</span><span class="s2">(</span><span class="s1">intent</span><span class="s2">);</span>
+
+        <span class="s2">} </span><span class="s0">else </span><span class="s2">{</span>
+            <span class="s1">Toast</span><span class="s2">.</span><span class="s1">makeText</span><span class="s2">(</span><span class="s1">MainActivity</span><span class="s2">.</span><span class="s0">this</span><span class="s2">, </span><span class="s4">&quot;❌ Error al guardar el contacto. Revise las restricciones de la BD o Logcat.&quot;</span><span class="s2">, </span><span class="s1">Toast</span><span class="s2">.</span><span class="s1">LENGTH_LONG</span><span class="s2">).</span><span class="s1">show</span><span class="s2">();</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+<span class="s2">}</span></pre>
+</body>
+</html>
