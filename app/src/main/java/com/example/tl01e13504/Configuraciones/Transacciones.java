@@ -1,32 +1,28 @@
 package com.example.tl01e13504.Configuraciones;
 
 public class Transacciones {
+    // Nombre de la base de datos y versión
+    public static final String DBNAME = "DBContactos";
+    public static final int DBVERSION = 1;
 
-    public static final String DBNAME = "TL01E13504";
-    public static final int DBVERSION = 2;
+    // Nombre de la tabla
+    public static final String TablaContactos = "contactos";
 
-    public static final String TableContactos= "contacto";
-
+    // Campos
     public static final String id = "id";
     public static final String nombre = "nombre";
     public static final String telefono = "telefono";
     public static final String nota = "nota";
-    public static final String listapaises = "listapaises";
-    public static final String foto = "foto";
+    public static final String codigoPais = "codigoPais";
+    public static final String imagen = "imagen";
 
-    // DDL
-    public static final String CREATETABLECONTACTOS =
-            "CREATE TABLE " + TableContactos + " (" +
-                    id + " INTEGER PRIMARY KEY AUTOINCREMENT, " + // Se agregó la PK
-                    nombre + " TEXT NOT NULL, " + // Se añadió el espacio
-                    telefono + " TEXT NOT NULL, " + // Se añadió el espacio
-                    nota + " TEXT, " + // Se cambió INTEGER por TEXT si se usará como una cadena
-                    listapaises + " TEXT, " + // Se añadió el espacio
-                    foto + " TEXT) "; // Se añadió el espacio y cerró paréntesis
-
-    public static final String DROPTABLECONTACTOS = "DROP TABLE IF EXISTS " + TableContactos;
-
-    // DML - select, insert, update, delete
-    public static final String SELECTTABLECONTACTOS = "SELECT * FROM " + TableContactos; // Corregido de + a *
-
+    // Sentencia para crear tabla
+    public static final String CreateTableContactos =
+            "CREATE TABLE " + TablaContactos + " (" +
+                    id + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                    nombre + " TEXT, " +
+                    telefono + " TEXT, " +
+                    nota + " TEXT, " +
+                    codigoPais + " TEXT, " +
+                    imagen + " TEXT)";
 }

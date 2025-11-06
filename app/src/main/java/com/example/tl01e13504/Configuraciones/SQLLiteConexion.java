@@ -5,92 +5,62 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-
-import com.example.tl01e13504.Configuraciones.Contactos; // Ajusta el paquete si es diferente
-
-import org.jetbrains.annotations.Nullable;
-
+import com.example.tl01e13504.Contactos;
 import java.util.ArrayList;
-import java.util.List;
-public class SQLLiteConexion extends SQLiteOpenHelper
-{
-    public SQLLiteConexion(@Nullable Context context, @Nullable String name, @Nullable SQLiteDatabase.CursorFactory factory, int version) {
+
+public class SQLLiteConexion extends SQLiteOpenHelper {
+
+    public SQLLiteConexion(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
         super(context, name, factory, version);
-
-    }
-
-
-
-    @Override
-    public void onCreate(SQLiteDatabase sqLiteDatabase) {
-
-        sqLiteDatabase.execSQL(Transacciones.CREATETABLECONTACTOS);
-
     }
 
     @Override
-    public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
-
-        sqLiteDatabase.execSQL(Transacciones.DROPTABLECONTACTOS); // Usar la instancia provista
-        onCreate(sqLiteDatabase);
+    public void onCreate(SQLiteDatabase db) {
+        db.execSQL(Transacciones.CreateTableContactos);
     }
-    public long insertarContacto(String nombre, String telefono, String nota, String pais, String fotoBase64) {
-        SQLiteDatabase db = this.getWritableDatabase(); // 1. Abrir conexión
 
-        ContentValues valores = new ContentValues(); // 2. Preparar datos
+    @Override
+    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        db.execSQL("DROP TABLE IF EXISTS " + Transacciones.TablaContactos);
+        onCreate(db);
+    }
+
+    // 👉 Método para insertar contacto
+    public long insertarContacto(String nombre, String telefono, String nota, String codigoPais, String imagen) {
+        SQLiteDatabase db = getWritableDatabase();
+        ContentValues valores = new ContentValues();
         valores.put(Transacciones.nombre, nombre);
         valores.put(Transacciones.telefono, telefono);
         valores.put(Transacciones.nota, nota);
-        valores.put(Transacciones.listapaises, pais);
-        valores.put(Transacciones.foto, fotoBase64);
-
-        long id = db.insert(Transacciones.TableContactos, null, valores); // 3. Ejecutar INSERT
-
-        db.close(); // 4. Cerrar conexión
-        return id; // 5. Devolver el resultado
+        valores.put(Transacciones.codigoPais, codigoPais);
+        valores.put(Transacciones.imagen, imagen);
+        long resultado = db.insert(Transacciones.TablaContactos, null, valores);
+        db.close();
+        return resultado;
     }
-    public List<Contactos> obtenerContactos() {
-        List<Contactos> listaContactos = new ArrayList<>();
-        SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = null;
 
-        try {
-            // Ejecutar la consulta SELECT * FROM contacto
-            cursor = db.rawQuery(Transacciones.SELECTTABLECONTACTOS, null);
+    // 👉 Método para obtener contactos
+    public ArrayList<Contactos> obtenerContactos() {
+        ArrayList<Contactos> lista = new ArrayList<>();
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT * FROM " + Transacciones.TablaContactos, null);
 
-            if (cursor != null && cursor.moveToFirst()) {
-
-                // Obtener índices de las columnas
-                int idIndex = cursor.getColumnIndex(Transacciones.id);
-                int nombreIndex = cursor.getColumnIndex(Transacciones.nombre);
-                int telefonoIndex = cursor.getColumnIndex(Transacciones.telefono);
-                int notaIndex = cursor.getColumnIndex(Transacciones.nota);
-                int paisIndex = cursor.getColumnIndex(Transacciones.listapaises);
-
-                do {
-                    Contactos contacto = new Contactos();
-
-                    // Asignar los valores del cursor al objeto Contactos
-                    if (idIndex != -1) contacto.setId(cursor.getInt(idIndex));
-                    if (nombreIndex != -1) contacto.setNombre(cursor.getString(nombreIndex));
-                    if (telefonoIndex != -1) contacto.setTelefono(cursor.getString(telefonoIndex));
-                    if (notaIndex != -1) contacto.setNota(cursor.getString(notaIndex));
-                    if (paisIndex != -1) contacto.setPais(cursor.getString(paisIndex));
-
-                    listaContactos.add(contacto);
-                } while (cursor.moveToNext());
-            }
-
-        } catch (Exception e) {
-            // Imprime el error en Logcat para diagnóstico
-            e.printStackTrace();
-        } finally {
-            if (cursor != null) cursor.close();
-            db.close();
+        if (cursor.moveToFirst()) {
+            do {
+                Contactos contacto = new Contactos();
+                contacto.setId(cursor.getInt(cursor.getColumnIndexOrThrow(Transacciones.id)));
+                contacto.setNombre(cursor.getString(cursor.getColumnIndexOrThrow(Transacciones.nombre)));
+                contacto.setTelefono(cursor.getString(cursor.getColumnIndexOrThrow(Transacciones.telefono)));
+                contacto.setNota(cursor.getString(cursor.getColumnIndexOrThrow(Transacciones.nota)));
+                contacto.setCodigoPais(cursor.getString(cursor.getColumnIndexOrThrow(Transacciones.codigoPais)));
+                contacto.setImagen(cursor.getString(cursor.getColumnIndexOrThrow(Transacciones.imagen)));
+                lista.add(contacto);
+            } while (cursor.moveToNext());
         }
-        return listaContactos;
+        cursor.close();
+        db.close();
+        return lista;
     }
-
 }
 
 

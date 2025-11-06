@@ -1,31 +1,25 @@
-package com.example.tl01e13504.Configuraciones;
-
-import androidx.annotation.NonNull;
+package com.example.tl01e13504;
 
 public class Contactos {
     private int id;
     private String nombre;
     private String telefono;
     private String nota;
-    private String pais; // Usaremos 'pais' en lugar de 'listapaises' para simplificar
-    private String fotoBase64; // La cadena base64 de la foto
+    private String codigoPais;
+    private String imagen;
 
-    // Constructor vacío (necesario si vas a usar un Cursor para llenar los datos)
     public Contactos() {}
 
-    // Constructor para cuando se necesita un objeto completo
-    public Contactos(int id, String nombre, String telefono, String nota, String pais, String fotoBase64) {
+    public Contactos(int id, String nombre, String telefono, String nota, String codigoPais, String imagen) {
         this.id = id;
         this.nombre = nombre;
         this.telefono = telefono;
         this.nota = nota;
-        this.pais = pais;
-        this.fotoBase64 = fotoBase64;
+        this.codigoPais = codigoPais;
+        this.imagen = imagen;
     }
 
-    // Getters y Setters
-    // (Debes generarlos todos: Alt + Insert o Click derecho -> Generate -> Getter and Setter)
-
+    // Getters y setters
     public int getId() { return id; }
     public void setId(int id) { this.id = id; }
 
@@ -38,17 +32,16 @@ public class Contactos {
     public String getNota() { return nota; }
     public void setNota(String nota) { this.nota = nota; }
 
-    public String getPais() { return pais; }
-    public void setPais(String pais) { this.pais = pais; }
+    public String getCodigoPais() { return codigoPais; }
+    public void setCodigoPais(String codigoPais) { this.codigoPais = codigoPais; }
 
-    public String getFotoBase64() { return fotoBase64; }
-    public void setFotoBase64(String fotoBase64) { this.fotoBase64 = fotoBase64; }
+    public String getImagen() { return imagen; }
+    public void setImagen(String imagen) { this.imagen = imagen; }
 
-    // Método ToString para mostrar datos en un ListView simple (Importante para la lista)
-
+    // 👇 Esto define cómo se verá en el ListView
     @Override
     public String toString() {
-        return "ID: " + id + " | Nombre: " + nombre + " | Teléfono: " + telefono + " (" + pais + ")";
+        return nombre + " (" + codigoPais + ") - " + telefono;
     }
 }
 
