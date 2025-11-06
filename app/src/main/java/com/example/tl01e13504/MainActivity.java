@@ -2,7 +2,6 @@ package com.example.tl01e13504;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -17,7 +16,6 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Base64;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -35,13 +33,12 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 
-import com.example.tl01e13504.Configuraciones.DbContactos;
-
+// ➡️ IMPORTACIONES DE SQLite
+import com.example.tl01e13504.Configuraciones.SQLLiteConexion;
+import com.example.tl01e13504.Configuraciones.Transacciones; // Asegúrate de que esta clase exista y sea 'Transacciones'
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-
-
 
 public class MainActivity extends AppCompatActivity {
 
@@ -50,19 +47,15 @@ public class MainActivity extends AppCompatActivity {
     ListView listaPaises;
     ArrayAdapter<String> adaptador;
     String[] paises = {
-            "Honduras (504)",
-            "Costa Rica (506)",
-            "Guatemala (502)",
-            "El Salvador (503)",
-            "Nicaragua (505)",
-            "Panamá (507)"
+            "Honduras (504)", "Costa Rica (506)", "Guatemala (502)",
+            "El Salvador (503)", "Nicaragua (505)", "Panamá (507)"
     };
     ImageView imageView;
     Button btnfoto, btnsalvarcontacto, btncontactossalvados;
     private static final int PERMISO_CAMARA = 101;
     private String fotoBase64 = null;
     private File fotoFile;
-
+    private String paisSeleccionadoStr = "";
     ActivityResultLauncher<Intent> tomarFotoLauncher;
     private String codigoPaisSeleccionado = "";
 
@@ -77,18 +70,16 @@ public class MainActivity extends AppCompatActivity {
         // 1. Inicialización de Vistas
         buscarpais = findViewById(R.id.buscarPais);
         listaPaises = findViewById(R.id.listapaises);
-        nombre = (EditText) findViewById(R.id.nombre);
-        telefono = (EditText) findViewById(R.id.telefono);
-        nota = (EditText) findViewById(R.id.nota);
-        imageView = (ImageView) findViewById(R.id.imageView);
+        nombre = findViewById(R.id.nombre);
+        telefono = findViewById(R.id.telefono);
+        nota = findViewById(R.id.nota);
+        imageView = findViewById(R.id.imageView);
 
-        btnfoto = (Button) findViewById(R.id.btnfoto);
-        btnsalvarcontacto = (Button) findViewById(R.id.btnsalvarcontacto);
-        btncontactossalvados = (Button) findViewById(R.id.btncontactossalvados);
+        btnfoto = findViewById(R.id.btnfoto);
+        btnsalvarcontacto = findViewById(R.id.btnsalvarcontacto);
+        btncontactossalvados = findViewById(R.id.btncontactossalvados);
 
-        // --- 2. LÓGICA DEL LISTVIEW DE PAÍSES (CONSOLIDADA AQUÍ) ---
-
-        // Configuramos el adaptador del ListView
+        // --- 2. LÓGICA DEL LISTVIEW DE PAÍSES ---
         adaptador = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, paises);
         listaPaises.setAdapter(adaptador);
 
@@ -101,7 +92,6 @@ public class MainActivity extends AppCompatActivity {
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 adaptador.getFilter().filter(s);
             }
-
             @Override
             public void afterTextChanged(Editable s) { }
         });
@@ -109,32 +99,27 @@ public class MainActivity extends AppCompatActivity {
         // Listener que guarda el código de país (CLAVE)
         listaPaises.setOnItemClickListener((parent, view, position, id) -> {
             String paisSeleccionado = (String) parent.getItemAtPosition(position);
-
-            // Extraer el código de país (ej. 504)
+            paisSeleccionadoStr = paisSeleccionado;
             int inicio = paisSeleccionado.indexOf("(");
             int fin = paisSeleccionado.indexOf(")");
             if (inicio != -1 && fin != -1) {
-                // Guarda el código de país en la variable global
                 codigoPaisSeleccionado = paisSeleccionado.substring(inicio + 1, fin);
             } else {
                 codigoPaisSeleccionado = "";
             }
-
-            Toast.makeText(MainActivity.this, "Seleccionado: " + paisSeleccionado, Toast.LENGTH_SHORT).show();
-
-            // Opcional: Ocultar el ListView después de seleccionar (si lo deseas)
-            // listaPaises.setVisibility(View.GONE);
+            Toast.makeText(MainActivity.this, "Código de País Seleccionado: " + codigoPaisSeleccionado, Toast.LENGTH_SHORT).show();
         });
 
-        // --- 3. LISTENERS DE BOTONES Y CÁMARA ---
+        // 3. LISTENERS DE BOTONES
 
+        // ➡️ BOTÓN SALVAR CONTACTO: Llama a la validación antes de guardar en SQLite
         btnsalvarcontacto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 validarCampos();
+
             }
         });
-
 
         btnfoto.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -143,14 +128,26 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        // Listener para la cámara (ActivityResultLauncher)
+        // ➡️ BOTÓN CONTACTOS SALVADOS: Navega a la ActivitySegunda
+        btncontactossalvados.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this, ActivitySegunda.class);
+                startActivity(intent);
+            }
+        });
+
+        // Inicialización del ActivityResultLauncher para la cámara
+        inicializarCamaraLauncher();
+    }
+
+    private void inicializarCamaraLauncher() {
         tomarFotoLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> {
                     if (result.getResultCode() == RESULT_OK) {
                         if (fotoFile != null && fotoFile.exists()) {
                             try {
-                                // ... (Lógica de procesamiento de foto y Base64)
                                 Bitmap foto = BitmapFactory.decodeFile(fotoFile.getAbsolutePath());
                                 ExifInterface exif = new ExifInterface(fotoFile.getAbsolutePath());
                                 int orientation = exif.getAttributeInt(
@@ -177,16 +174,12 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
         );
-
-        btncontactossalvados.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                // Lanza la actividad para ver la lista
-                Intent intent = new Intent(MainActivity.this, ActivitySegunda.class);
-                startActivity(intent);
-            }
-        });
     }
+
+    // ... [MÉTODOS AUXILIARES: bitmapToBase64, exifToDegrees, Permisos, onRequestPermissionsResult, OpenCamara] ...
+
+    // [Nota: Dejé los métodos auxiliares de la cámara/permisos fuera de esta respuesta para no duplicar código,
+    // pero deben estar presentes y completos en tu archivo.]
 
     private String bitmapToBase64(Bitmap bitmap) {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
@@ -208,7 +201,6 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-
     private void Permisos() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) !=
                 PackageManager.PERMISSION_GRANTED) {
@@ -220,8 +212,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults, int deviceId) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults, deviceId);
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == PERMISO_CAMARA) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 OpenCamara();
@@ -233,7 +225,6 @@ public class MainActivity extends AppCompatActivity {
 
     private void OpenCamara() {
         try {
-            // Crear archivo temporal
             fotoFile = new File(getExternalFilesDir(Environment.DIRECTORY_PICTURES),
                     "foto_" + System.currentTimeMillis() + ".jpg");
             Uri fotoUri = FileProvider.getUriForFile(this,
@@ -243,85 +234,76 @@ public class MainActivity extends AppCompatActivity {
             Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
             intent.putExtra(MediaStore.EXTRA_OUTPUT, fotoUri);
             tomarFotoLauncher.launch(intent);
-
         } catch (Exception ex) {
             ex.printStackTrace();
             Toast.makeText(this, "Error al abrir cámara: " + ex.getMessage(), Toast.LENGTH_LONG).show();
         }
-
-        // **IMPORTANTE:** Toda la lógica del ListView de países ha sido eliminada de aquí.
-        // Solo debe estar la lógica de la cámara.
     }
 
     private void validarCampos() {
         String nombreStr = nombre.getText().toString().trim();
         String telefonoStr = telefono.getText().toString().trim();
-        String notaStr = nota.getText().toString().trim();
+        // String notaStr = nota.getText().toString().trim(); // Se recoge más abajo
 
         StringBuilder mensajeError = new StringBuilder();
 
         if (nombreStr.isEmpty()) {
-            mensajeError.append("El campo Nombre está vacío.\n");
+            mensajeError.append("- El campo **Nombre** está vacío.\n");
         }
         if (telefonoStr.isEmpty()) {
-            mensajeError.append("El campo Teléfono está vacío.\n");
+            mensajeError.append("- El campo **Teléfono** está vacío.\n");
         }
-        if (notaStr.isEmpty()) {
-            mensajeError.append("El campo Nota está vacío.\n");
-        }
+        // Nota: Si 'nota' es obligatorio, descomenta:
+        // if (notaStr.isEmpty()) { mensajeError.append("- El campo Nota está vacío.\n"); }
 
-        // AGREGAR LA VERIFICACIÓN DEL CÓDIGO DE PAÍS AQUÍ
-        // Si el usuario no ha hecho clic en la lista, la variable estará vacía.
         if (codigoPaisSeleccionado.isEmpty()) {
-            mensajeError.append("Por favor, selecciona un código de país.\n");
+            mensajeError.append("- Por favor, selecciona un **código de país**.\n");
         }
-
 
         if (mensajeError.length() > 0) {
-            // Muestra la alerta con el mensaje específico
             mostrarAlerta(mensajeError.toString());
         } else {
-            // Si todos los campos y el país están seleccionados, guardar
             guardarContacto();
         }
     }
 
     private void mostrarAlerta (String mensaje){
         AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-        builder.setTitle("Campos Obligatorios");
-        builder.setMessage(mensaje); // Usa el mensaje específico
-        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-            }
-        });
+        builder.setTitle("⚠️ Campos Obligatorios");
+        builder.setMessage(mensaje);
+        builder.setPositiveButton("OK", (dialog, which) -> dialog.dismiss());
         builder.show();
     }
 
+    /**
+     * 🚀 IMPLEMENTACIÓN FINAL DEL GUARDADO EN SQLite
+     */
     private void guardarContacto() {
         String nombreStr = nombre.getText().toString();
         String telefonoStr = telefono.getText().toString();
         String notaStr = nota.getText().toString();
+        String listapais = paisSeleccionadoStr;
 
-        // La validación ya se hizo en validarCampos(), aquí se asume que codigoPaisSeleccionado NO está vacío.
+        // 1. Crear la instancia de la conexión
+        SQLLiteConexion dbContactos = new SQLLiteConexion(
+                this,
+                Transacciones.DBNAME, // Nombre de la BD
+                null,
+                Transacciones.DBVERSION // Versión
+        );
 
-        // Insertar en la Base de Datos
-        DbContactos dbContactos = new DbContactos(MainActivity.this);
+        // 2. Llamar al método de inserción (debe existir en SQLLiteConexion)
         long id = dbContactos.insertarContacto(
                 nombreStr,
                 telefonoStr,
                 notaStr,
-                codigoPaisSeleccionado,
-                fotoBase64 // Puede ser null si no se tomó foto
+               codigoPaisSeleccionado ,
+                fotoBase64
         );
 
+        // 3. Manejar el resultado
         if (id > 0) {
-            Toast.makeText(MainActivity.this, "Contacto Guardado (ID: " + id + ")", Toast.LENGTH_LONG).show();
-
-            // Navegar a ActivitySegunda
-            Intent intent = new Intent(MainActivity.this, ActivitySegunda.class);
-            startActivity(intent);
+            Toast.makeText(MainActivity.this, "✅ Contacto Guardado Exitosamente (ID: " + id + ")", Toast.LENGTH_LONG).show();
 
             // Limpiar campos
             nombre.setText("");
@@ -329,14 +311,14 @@ public class MainActivity extends AppCompatActivity {
             nota.setText("");
             imageView.setImageDrawable(null);
             fotoBase64 = null;
-            codigoPaisSeleccionado = ""; // Limpiar también el código de país seleccionado
-        }
-        else if (id == -1) { // Si id es -1, hubo un error de inserción
-        Toast.makeText(MainActivity.this, "ERROR: La inserción falló (ID: -1). Revise el logcat y restricciones de la BD.", Toast.LENGTH_LONG).show();
-    } else {
-        // Cualquier otro valor (aunque improbable si no es una excepción)
-        Toast.makeText(MainActivity.this, "Error al guardar el contacto (ID: " + id + ")", Toast.LENGTH_LONG).show();
-    }
+            codigoPaisSeleccionado = "";
 
+            // Navegar a ActivitySegunda después de guardar
+            Intent intent = new Intent(MainActivity.this, ActivitySegunda.class);
+            startActivity(intent);
+
+        } else {
+            Toast.makeText(MainActivity.this, "❌ Error al guardar el contacto. Revise las restricciones de la BD o Logcat.", Toast.LENGTH_LONG).show();
+        }
     }
 }

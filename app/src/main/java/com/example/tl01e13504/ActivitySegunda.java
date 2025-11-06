@@ -1,71 +1,57 @@
 package com.example.tl01e13504;
 
 import android.os.Bundle;
-import androidx.appcompat.app.AppCompatActivity;
-import android.widget.Button;
-import android.widget.ListView;
 import android.widget.ArrayAdapter;
-import android.widget.Toast;
+import android.widget.ListView;
+import android.widget.Toast; // Añadir Toast para mensajes de depuración
 
-import com.example.tl01e13504.Configuraciones.Contacto;
-import com.example.tl01e13504.Configuraciones.DbContactos;
-import java.util.ArrayList;
-import java.util.List;
+import androidx.appcompat.app.AppCompatActivity;
+
+// Importar las clases necesarias
+import com.example.tl01e13504.Configuraciones.SQLLiteConexion;
+import com.example.tl01e13504.Configuraciones.Transacciones;
+import com.example.tl01e13504.Configuraciones.Contactos; // ⚠️ AQUI ASUMO QUE Contactos ESTÁ EN Configuraciones
+import java.util.List; // Usar List en lugar de ArrayList<String>
 
 public class ActivitySegunda extends AppCompatActivity {
 
-    ListView listViewContactos;
+    ListView listViewContactos; // Cambiado de 'listView' a 'listViewContactos'
+    SQLLiteConexion dbHelper;
+    List<Contactos> listaResultados; // Usar la lista de objetos Contactos
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_segunda);
 
+        // 1. Inicialización de vistas y conexión
         listViewContactos = findViewById(R.id.listViewContactos);
+        dbHelper = new SQLLiteConexion(this, Transacciones.DBNAME, null, Transacciones.DBVERSION);
 
-        // Botón atrás
-        Button btnAtras = findViewById(R.id.btnatras);
-        if (btnAtras != null) {
-            btnAtras.setOnClickListener(v -> finish());
-        }
+        // 2. Llamar al método de lectura
+        mostrarContactos();
 
-        // Llamada inicial (solo para mostrar al abrir)
-        cargarLista();
+        // Opcional: Listener para depuración
+        listViewContactos.setOnItemClickListener((parent, view, position, id) -> {
+            Contactos contactoSeleccionado = listaResultados.get(position);
+            Toast.makeText(this, "Seleccionado: " + contactoSeleccionado.getNombre(), Toast.LENGTH_SHORT).show();
+        });
     }
 
-    // 👇 OJO: este método debe ir fuera de onCreate()
-    @Override
-    protected void onResume() {
-        super.onResume();
-        cargarLista(); // Se ejecuta cada vez que la Activity vuelve a mostrarse
-    }
+    private void mostrarContactos() {
+        // 🚀 AHORA USAMOS EL MÉTODO obtenerContactos() DE SQLLiteConexion
+        listaResultados = dbHelper.obtenerContactos();
 
-    private void cargarLista() {
-        DbContactos dbContactos = new DbContactos(ActivitySegunda.this);
-        ArrayList<Contacto> listaObjetos = dbContactos.mostrarContactos();
-
-        List<String> listaStrings = new ArrayList<>();
-
-        // Si la lista está vacía, agregaremos un mensaje de error manual.
-        if (listaObjetos.isEmpty()) {
-            listaStrings.add("--- ERROR: BASE DE DATOS VACÍA O FALLÓ LECTURA ---");
-        } else {
-            // Usa tu bucle original si la lista tiene algo
-            for (Contacto contacto : listaObjetos) {
-                String item = contacto.getNombre() +
-                        " | Cód: " + contacto.getCodigoPais() +
-                        " | Tel: " + contacto.getTelefono();
-                listaStrings.add(item);
-            }
+        if (listaResultados.isEmpty()) {
+            Toast.makeText(this, "No hay contactos guardados en la BD.", Toast.LENGTH_LONG).show();
+            return;
         }
 
-        Toast.makeText(this, "Items leídos de la BD: " + listaObjetos.size(), Toast.LENGTH_LONG).show();
+        // El ArrayAdapter llama automáticamente al método toString() de la clase Contactos
+        ArrayAdapter<Contactos> adaptador = new ArrayAdapter<>(this,
+                android.R.layout.simple_list_item_1, listaResultados);
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(
-                this,
-                android.R.layout.simple_list_item_1,
-                listaStrings
-        );
-        listViewContactos.setAdapter(adapter);
+        listViewContactos.setAdapter(adaptador);
+        Toast.makeText(this, "Se cargaron " + listaResultados.size()+ " contactos.", Toast.LENGTH_SHORT).show();
     }
 }
