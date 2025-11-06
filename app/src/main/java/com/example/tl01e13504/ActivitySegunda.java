@@ -1,23 +1,28 @@
 package com.example.tl01e13504;
 
 import android.os.Bundle;
+import android.view.View; // 👈 Importar View
 import android.widget.ArrayAdapter;
+import android.widget.Button; // 👈 Importar Button
 import android.widget.ListView;
-import android.widget.Toast; // Añadir Toast para mensajes de depuración
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 // Importar las clases necesarias
 import com.example.tl01e13504.Configuraciones.SQLLiteConexion;
 import com.example.tl01e13504.Configuraciones.Transacciones;
-import com.example.tl01e13504.Configuraciones.Contactos; // ⚠️ AQUI ASUMO QUE Contactos ESTÁ EN Configuraciones
-import java.util.List; // Usar List en lugar de ArrayList<String>
+import com.example.tl01e13504.Configuraciones.Contactos;
+import java.util.List;
 
 public class ActivitySegunda extends AppCompatActivity {
 
-    ListView listViewContactos; // Cambiado de 'listView' a 'listViewContactos'
+    ListView listViewContactos;
     SQLLiteConexion dbHelper;
-    List<Contactos> listaResultados; // Usar la lista de objetos Contactos
+    List<Contactos> listaResultados;
+
+    // 1. Declaración del botón
+    Button btnRegresar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,9 +31,22 @@ public class ActivitySegunda extends AppCompatActivity {
 
         // 1. Inicialización de vistas y conexión
         listViewContactos = findViewById(R.id.listViewContactos);
+
+        // 2. Inicialización del botón "Regresar"
+        btnRegresar = findViewById(R.id.btnatras);
+
         dbHelper = new SQLLiteConexion(this, Transacciones.DBNAME, null, Transacciones.DBVERSION);
 
-        // 2. Llamar al método de lectura
+        // 3. Programar el Listener del botón "Regresar"
+        btnRegresar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // 🚀 Cierra la actividad actual y regresa a la actividad anterior (MainActivity)
+                finish();
+            }
+        });
+
+        // 4. Llamar al método de lectura
         mostrarContactos();
 
         // Opcional: Listener para depuración
@@ -39,7 +57,6 @@ public class ActivitySegunda extends AppCompatActivity {
     }
 
     private void mostrarContactos() {
-        // 🚀 AHORA USAMOS EL MÉTODO obtenerContactos() DE SQLLiteConexion
         listaResultados = dbHelper.obtenerContactos();
 
         if (listaResultados.isEmpty()) {
@@ -47,7 +64,6 @@ public class ActivitySegunda extends AppCompatActivity {
             return;
         }
 
-        // El ArrayAdapter llama automáticamente al método toString() de la clase Contactos
         ArrayAdapter<Contactos> adaptador = new ArrayAdapter<>(this,
                 android.R.layout.simple_list_item_1, listaResultados);
 

@@ -45,7 +45,7 @@ public class Contactos {
     public void setFotoBase64(String fotoBase64) { this.fotoBase64 = fotoBase64; }
 
     // Método ToString para mostrar datos en un ListView simple (Importante para la lista)
-    @NonNull
+
     @Override
     public String toString() {
         return "ID: " + id + " | Nombre: " + nombre + " | Teléfono: " + telefono + " (" + pais + ")";
